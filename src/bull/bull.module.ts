@@ -22,7 +22,7 @@ import { BullMQMetricsFactory } from './bullmq-metrics.factory';
               name: client,
               host: configService.config.REDIS_HOST,
               password: configService.config.REDIS_PASSWORD,
-              port: configService.config.REDIS_PORT,
+              port: configService.config.REDIS_PORT || 12312,
               db: configService.config.REDIS_DB,
               enableReadyCheck: true,
               reconnectOnError: () => true,

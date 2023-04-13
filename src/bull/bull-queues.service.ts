@@ -248,6 +248,7 @@ export class BullQueuesService implements OnModuleInit, OnModuleDestroy {
         .scanStream({ type: 'hash', match, count: 100 })
         .on('data', (keys: string[]) => {
           for (const key of keys) {
+            console.log(key)
             const queueMatch = parseBullQueue(key);
             loadedQueues.add(
               this.generateQueueKey(
@@ -376,7 +377,7 @@ export class BullQueuesService implements OnModuleInit, OnModuleDestroy {
           await Promise.all([
             // this.findAndPopulateQueues(`${queuePrefix}:*:stalled-check`),
             //this.findAndPopulateQueues(`${queuePrefix}:*:id`),
-            this.findAndPopulateQueues(`${queuePrefix}:*:meta`),
+            this.findAndPopulateQueues(`${queuePrefix}:*`),
           ])
         ).flat();
       }
@@ -413,14 +414,6 @@ export class BullQueuesService implements OnModuleInit, OnModuleDestroy {
       REDIS_CLIENTS.SUBSCRIBE,
     );
     const publisher = await this.redisService.getClient(REDIS_CLIENTS.PUBLISH);
-
-    if (subscriber.status == 'ready') {
-      this.initializeSubscriber();
-    }
-
-    if (publisher.status == 'ready') {
-      this.initializePublisher();
-    }
 
     subscriber.on(REDIS_EVENT_TYPES.READY, async () => {
       this.logger.log(`[${REDIS_CLIENTS.SUBSCRIBE}] ready`);
